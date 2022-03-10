@@ -11,19 +11,21 @@ three <- read.csv ("three-stars-michelin-restaurants.csv", head=T, sep=",")
 ##continents
 asia <- c("Hong Kong", "Macau","Singapore","South Korea","Taipei","Thailand")
 
-america <- c("California","Chicago","New York City","Washington DC", "Rio de 
-Janeiro","Sao Paulo")
+america <- c("California","Chicago","New York City","Washington DC", 
+             "Rio de Janeiro","Sao Paulo")
 
 europe <- c("Austria", "Czech Republic", "Denmark", "Hungary", "Norway", "Finland", 
             "Ireland", "Poland", "United Kingdom", "Croatia", "Greece", "Sweden")
 
 #fill column
-one$continent <- ifelse(one$region %in% asia , "Asia", ifelse(one$region %in% america, 
-                                                              "America", "Europe"))
-two$continent <- ifelse(two$region %in% asia , "Asia", ifelse(two$region %in% 
-                                                                america, "America", "Europe"))
-three$continent <- ifelse(three$region %in% asia , "Asia", ifelse(three$region %in% 
-                                                                    america, "America", "Europe"))
+one$continent <- ifelse(one$region %in% asia , "Asia", 
+                 ifelse(one$region %in% america, "America", "Europe"))
+
+two$continent <- ifelse(two$region %in% asia , "Asia", 
+                 ifelse(two$region %in% america, "America", "Europe"))
+
+three$continent <- ifelse(three$region %in% asia , "Asia",
+                   ifelse(three$region %in% america, "America", "Europe"))
 
 
 #stars
@@ -55,8 +57,7 @@ plot(st_geometry(map))
 library(sp)
 xy <- df[,c("longitude","latitude")]
 mich <- SpatialPointsDataFrame(coords = xy, data = df,
-                               proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 
-+towgs84=0,0,0"))
+                               proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
 mich$star<-as.factor(mich$star)
 
 #map plot
@@ -67,23 +68,26 @@ tm_shape(map) +
   tm_shape(mich)+
   tm_layout(title= " Michelin Stars Restaurant - 2019", 
             title.position = c('top'))+
-  tm_dots(col="star", size = 0.1, labels=c("1 Star","2 Stars","3 Stars"),palette = 
-            c("aquamarine2", "cornflowerblue", "brown1"),popup.vars=c("Name"="name", 
-                                                                      "Cuisine"="cuisine", "City"="city", "Price"="price"))
+  tm_dots(col="star", size = 0.1, labels=c("1 Star","2 Stars","3 Stars"),
+           palette =c("aquamarine2", "cornflowerblue", "brown1"),
+           popup.vars=c("Name"="name", "Cuisine"="cuisine", "City"="city", "Price"="price"))
 
 
 
-
+///////////// * /////////////
 #Ploting countries by total number of stars with different colors in the European continent
 #europe
 EU <- aggregate(star~region, df, sum)
+
 colnames(EU)<- c("region", "total")
-EU$continent <-ifelse(EU$region %in% asia , "Asia", ifelse(EU$region %in% america, 
-                                                           "America", "Europe"))
+EU$continent <-ifelse(EU$region %in% asia , "Asia", 
+               ifelse(EU$region %in% america, "America", "Europe"))
 EU<-EU %>% 
   filter(continent == "Europe")
+
 map2 <- map %>%
   inner_join(EU)
+
 tmap_mode("view")
 tm_shape(map2) + 
   tm_borders()+
