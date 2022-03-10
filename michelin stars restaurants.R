@@ -82,7 +82,7 @@ EU <- aggregate(star~region, df, sum)
 colnames(EU)<- c("region", "total")
 EU$continent <-ifelse(EU$region %in% asia , "Asia", 
                ifelse(EU$region %in% america, "America", "Europe"))
-EU<-EU %>% 
+EU <-EU %>% 
   filter(continent == "Europe")
 
 map2 <- map %>%
